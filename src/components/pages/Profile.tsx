@@ -37,7 +37,7 @@ interface User {
 
 const Profile = ({navigation, route}) => {
   // State for the currently logged-in user
-  const [username] = useState(route.params?.foundUser);
+  const [username, setUsername] = useState(route.params?.foundUser);
 
   // React Hook Form setup for the form used in the modal
   const form = useForm<FormData>({
@@ -85,7 +85,19 @@ const Profile = ({navigation, route}) => {
       );
       if (!isUserNameRegistered) {
         dispatch(updateUserName(newName));
+        setUsername(prevUsername => ({
+          ...prevUsername,
+          userName: newName,
+        }));
+        const updatedUsersData = usersData.map((user: User) => {
+          if (user.email === route.params.foundUser.email) {
+            return {...user, userName: newName};
+          }
+          return user;
+        });
+        setUsersData(updatedUsersData);
         updateUserNameInAsyncStorage(newName);
+        setNewName('');
         setModalVisible(false);
         Alert.alert('Success', 'Username updated successfully!');
       } else {
