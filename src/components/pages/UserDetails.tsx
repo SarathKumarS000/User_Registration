@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import {useForm} from 'react-hook-form';
 import styles from '../Styles';
-import SizedBox from '../SizedBox';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateUserName} from '../redux/actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -52,7 +51,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
         updateUserNameInAsyncStorage(newName);
         setNewName('');
         setModalVisible(false);
-        Alert.alert('Success', 'Username updated successfully!');
       } else {
         form.setError('newUsername', {
           type: 'manual',
@@ -89,17 +87,19 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <View style={styles.hamburgerIconContainer}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}>
+        <View style={styles.backButtonContainer}>
           <Image
             source={require('../assets/back-icon.png')}
-            style={styles.hamburgerIcon}
+            style={styles.backButtonIcon}
           />
+          <Text style={styles.backButtonText}>Back</Text>
         </View>
       </TouchableOpacity>
 
-      <SizedBox height={70} />
-      <View style={styles.userDetailsContainer}>
+      <View style={styles.fullUserDetailsContainer}>
         <Text style={styles.userTitle}>User Details</Text>
         <View style={styles.separator} />
         <View style={styles.detailRow}>
@@ -116,10 +116,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
           <Text style={styles.detailLabel}>Username:</Text>
           <Text style={styles.detailValue}>{user?.userName}</Text>
         </View>
-
         <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <View style={styles.button}>
-            <Text style={styles.buttonTitle}>Update Username</Text>
+          <View style={styles.updateButton}>
+            <Text style={styles.updateButtonText}>Update Username</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -131,11 +130,10 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Enter New Username</Text>
-            <SizedBox height={5} />
+            <Text style={styles.modalTitle}>Change Username</Text>
             <TextInput
               style={styles.modalTextInput}
-              placeholder="Username"
+              placeholder="Enter new username"
               value={newName}
               onChangeText={text => {
                 setNewName(text);
@@ -152,17 +150,18 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
                 {form.formState.errors?.newUsername.message}
               </Text>
             )}
-            <SizedBox height={5} />
+
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <View style={styles.modalButton}>
-                  <Text style={styles.modalButtonText}>Cancel</Text>
-                </View>
+              <TouchableOpacity
+                style={styles.modalCancelButton}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.modalCancelButtonText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleUpdateNameConfirm}>
-                <View style={styles.modalButton}>
-                  <Text style={styles.modalButtonText}>Update</Text>
-                </View>
+
+              <TouchableOpacity
+                style={styles.modalUpdateButton}
+                onPress={handleUpdateNameConfirm}>
+                <Text style={styles.modalUpdateButtonText}>Update</Text>
               </TouchableOpacity>
             </View>
           </View>

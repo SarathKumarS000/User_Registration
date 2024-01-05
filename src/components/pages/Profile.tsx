@@ -100,7 +100,6 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
         setUsersData(updatedUsersData);
         setNewName('');
         setModalVisible(false);
-        Alert.alert('Success', 'Username updated successfully!');
       } else {
         form.setError('newUsername', {
           type: 'manual',
@@ -122,9 +121,9 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
       if (userDataString) {
         const parsedData = JSON.parse(userDataString) as User[];
 
-        const updatedData = parsedData.map((user: {email: any}) => {
+        const updatedData = parsedData.map((user: User) => {
           if (user.email === route.params.foundUser.email) {
-            return {...user, userName: newName};
+            return {...user, userName: newName} as User;
           }
           return user;
         });
@@ -136,19 +135,35 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
   };
 
   const navigationView = () => (
-    <View>
-      <TouchableOpacity onPress={handleLogout}>
-        <View style={styles.button}>
-          <Text style={styles.buttonTitle}>Logout</Text>
-        </View>
+    <View style={styles.drawerContainer}>
+      <View style={styles.drawerHeader}>
+        <Image
+          source={require('../assets/user.png')}
+          style={styles.drawerIcon}
+        />
+        <Text style={styles.drawerHeaderText}>
+          {user?.firstName + ' ' + user?.lastName}
+        </Text>
+      </View>
+      <TouchableOpacity
+        style={styles.drawerItem}
+        onPress={handleUpdateUserName}
+        activeOpacity={0.7}>
+        <Image
+          source={require('../assets/settings-icon.png')}
+          style={styles.drawerIcon}
+        />
+        <Text style={styles.drawerItemText}>Update Username</Text>
       </TouchableOpacity>
-
-      <SizedBox height={13} />
-
-      <TouchableOpacity onPress={handleUpdateUserName}>
-        <View style={styles.button}>
-          <Text style={styles.buttonTitle}>Update Username</Text>
-        </View>
+      <TouchableOpacity
+        style={styles.drawerItem}
+        onPress={handleLogout}
+        activeOpacity={0.7}>
+        <Image
+          source={require('../assets/logout-icon.png')}
+          style={styles.drawerIcon}
+        />
+        <Text style={styles.drawerItemText}>Logout</Text>
       </TouchableOpacity>
     </View>
   );
@@ -177,15 +192,14 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.root}>
         <SafeAreaView style={styles.safeAreaView}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.content}>
-            <DrawerLayoutAndroid
-              ref={drawerRef}
-              drawerWidth={250}
-              drawerBackgroundColor="transparent"
-              drawerPosition="left"
-              renderNavigationView={navigationView}>
+          <DrawerLayoutAndroid
+            ref={drawerRef}
+            drawerWidth={300}
+            drawerPosition="left"
+            renderNavigationView={navigationView}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={styles.content}>
               <Modal
                 animationType="slide"
                 transparent={true}
@@ -193,11 +207,10 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
                 onRequestClose={handleModalClose}>
                 <View style={styles.modalContainer}>
                   <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Enter New Username</Text>
-                    <SizedBox height={5} />
+                    <Text style={styles.modalTitle}>Change Username</Text>
                     <TextInput
                       style={styles.modalTextInput}
-                      placeholder="Username"
+                      placeholder="Enter new username"
                       value={newName}
                       onChangeText={text => {
                         setNewName(text);
@@ -208,22 +221,24 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
                       }}
                       onSubmitEditing={handleUpdateNameConfirm}
                     />
+
                     {form.formState.errors?.newUsername && (
                       <Text style={styles.errorText}>
                         {form.formState.errors?.newUsername.message}
                       </Text>
                     )}
-                    <SizedBox height={5} />
+
                     <View style={styles.modalButtonContainer}>
-                      <TouchableOpacity onPress={handleModalClose}>
-                        <View style={styles.modalButton}>
-                          <Text style={styles.modalButtonText}>Cancel</Text>
-                        </View>
+                      <TouchableOpacity
+                        style={styles.modalCancelButton}
+                        onPress={handleModalClose}>
+                        <Text style={styles.modalCancelButtonText}>Cancel</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={handleUpdateNameConfirm}>
-                        <View style={styles.modalButton}>
-                          <Text style={styles.modalButtonText}>Update</Text>
-                        </View>
+
+                      <TouchableOpacity
+                        style={styles.modalUpdateButton}
+                        onPress={handleUpdateNameConfirm}>
+                        <Text style={styles.modalUpdateButtonText}>Update</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -252,7 +267,7 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
                 <Text style={styles.boxHeading}>All Users List</Text>
                 <View style={styles.listContainer}>
                   <FlatList
-                    data={usersData}
+                    data={userList}
                     renderItem={({item}) => (
                       <TouchableOpacity
                         onPress={() => {
@@ -270,8 +285,8 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
                   />
                 </View>
               </View>
-            </DrawerLayoutAndroid>
-          </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+          </DrawerLayoutAndroid>
         </SafeAreaView>
       </View>
     </TouchableWithoutFeedback>

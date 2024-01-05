@@ -149,7 +149,7 @@ const SignIn: React.FC<SignInProps> = ({navigation}) => {
 
             <TouchableOpacity onPress={onSubmit}>
               <View style={styles.button}>
-                <Text style={styles.buttonTitle}>SignIn</Text>
+                <Text style={styles.buttonTitle}>Log In</Text>
               </View>
             </TouchableOpacity>
 

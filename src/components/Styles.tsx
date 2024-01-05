@@ -1,6 +1,132 @@
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    marginLeft: 16,
+  },
+  backButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButtonIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 8,
+  },
+  backButtonText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  fullUserDetailsContainer: {
+    backgroundColor: '#362659',
+    borderRadius: 10,
+    padding: 16,
+    paddingVertical: 32,
+    flex: 1,
+  },
+  userTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 10,
+  },
+  separator: {
+    borderBottomColor: '#6E4C88',
+    borderBottomWidth: 1,
+    marginBottom: 16,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  detailLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  detailValue: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    textAlign: 'left',
+    width: 220,
+  },
+  updateButton: {
+    alignItems: 'center',
+    backgroundColor: '#5D5FDE',
+    borderRadius: 8,
+    height: 48,
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  updateButtonText: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  modalCancelButton: {
+    backgroundColor: '#CCCCCC',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginRight: 10,
+  },
+  modalUpdateButton: {
+    backgroundColor: 'rgb(93, 95, 222)',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  modalCancelButtonText: {
+    color: '#555555', // Adjust color for better visibility
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  modalUpdateButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: 'rgb(93, 95, 222)',
+  },
+  modalTextInput: {
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    padding: 12,
+    marginBottom: 15,
+    borderRadius: 8,
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 10,
+  },
   button: {
     alignItems: 'center',
     backgroundColor: 'rgb(93, 95, 222)',
@@ -19,9 +145,6 @@ export default StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 16,
     paddingVertical: 32,
-  },
-  forgotPasswordContainer: {
-    alignItems: 'flex-end',
   },
   form: {
     alignItems: 'center',
@@ -70,22 +193,6 @@ export default StyleSheet.create({
   errorText: {
     color: 'red',
   },
-  userRow: {
-    backgroundColor: '#f5f5f5',
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  userEmail: {
-    fontSize: 14,
-    color: '#888',
-  },
   hamburgerIconContainer: {
     padding: 0,
     marginLeft: 0,
@@ -95,19 +202,48 @@ export default StyleSheet.create({
     height: 35,
   },
   boxContainer: {
-    backgroundColor: 'rgba(235, 235, 245, 0.6)',
-    borderRadius: 10,
-    padding: 16,
-    marginTop: 16,
+    backgroundColor: 'rgba(235, 235, 245, 0.8)',
+    borderRadius: 12,
+    padding: 20,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   boxHeading: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
+    color: 'black',
   },
   listContainer: {
-    maxHeight: 600,
+    maxHeight: 500,
+    marginTop: 10,
+  },
+  userRow: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    marginVertical: 8,
+    borderRadius: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'rgb(93, 95, 222)',
+  },
+  userEmail: {
+    fontSize: 16,
+    color: 'rgba(93, 95, 222, 0.7)',
   },
   container: {
     backgroundColor: '#000000',
@@ -115,84 +251,44 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  userDetailsContainer: {
-    backgroundColor: '#362659',
-    borderRadius: 10,
-    padding: 16,
-    paddingVertical: 32,
-  },
-  userTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginBottom: 10,
-  },
-  separator: {
-    borderBottomColor: '#6E4C88',
-    borderBottomWidth: 1,
-    marginBottom: 16,
-  },
-  detailRow: {
+  drawerHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
     alignItems: 'center',
-    paddingHorizontal: 16,
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(93, 95, 222, 0.5)',
   },
-  detailLabel: {
-    fontSize: 16,
+  drawerHeaderText: {
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    marginLeft: 10,
+    color: 'rgb(93, 95, 222)',
   },
-  detailValue: {
-    fontSize: 16,
-    color: '#FFFFFF',
-    textAlign: 'left',
-    width: 220,
-  },
-  modalContainer: {
+  drawerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 10,
-    width: '80%',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  modalButtonContainer: {
+  drawerItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modalTextInput: {
-    borderWidth: 1,
-    borderColor: 'grey',
-    padding: 10,
-    marginBottom: 15,
-    borderRadius: 5,
-  },
-  modalButton: {
     alignItems: 'center',
-    backgroundColor: 'rgb(93, 95, 222)',
-    borderRadius: 5,
-    padding: 10,
-    marginHorizontal: 5,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(93, 95, 222, 0.2)',
   },
-  modalButtonText: {
-    color: '#FFFFFF',
-    fontSize: 17,
-    fontWeight: '600',
-    lineHeight: 22,
+  drawerIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 15,
+    tintColor: 'rgb(93, 95, 222)',
   },
-  backButton: {
-    color: 'blue',
+  drawerItemText: {
     fontSize: 18,
+    color: 'black',
   },
 });
