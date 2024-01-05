@@ -107,7 +107,7 @@ export default StyleSheet.create({
     marginBottom: 8,
   },
   listContainer: {
-    maxHeight: 300,
+    maxHeight: 600,
   },
   container: {
     backgroundColor: '#000000',
@@ -190,5 +190,9 @@ export default StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
     lineHeight: 22,
+  },
+  backButton: {
+    color: 'blue',
+    fontSize: 18,
   },
 });

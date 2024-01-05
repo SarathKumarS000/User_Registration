@@ -21,7 +21,12 @@ interface FormData {
   password: string;
 }
 
-const SignIn = ({navigation}) => {
+interface SignInProps {
+  navigation: any;
+  route: any;
+}
+
+const SignIn: React.FC<SignInProps> = ({navigation}) => {
   const form = useForm<FormData>({
     defaultValues: {
       email: '',
@@ -63,7 +68,6 @@ const SignIn = ({navigation}) => {
     }
   };
 
-  // useEffect to pre-fill the email field with the last registered user's email
   useEffect(() => {
     AsyncStorage.getItem('usersData')
       .then(userDataString => {
@@ -143,17 +147,9 @@ const SignIn = ({navigation}) => {
 
             <SizedBox height={16} />
 
-            <TouchableOpacity>
-              <View style={styles.forgotPasswordContainer}>
-                <Text style={styles.textButton}>Forgot password?</Text>
-              </View>
-            </TouchableOpacity>
-
-            <SizedBox height={16} />
-
             <TouchableOpacity onPress={onSubmit}>
               <View style={styles.button}>
-                <Text style={styles.buttonTitle}>Continue</Text>
+                <Text style={styles.buttonTitle}>SignIn</Text>
               </View>
             </TouchableOpacity>
 
@@ -161,9 +157,9 @@ const SignIn = ({navigation}) => {
 
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
                 <View style={{alignItems: 'center'}}>
-                  <Text style={styles.textButton}>Home</Text>
+                  <Text style={styles.textButton}>Back</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>

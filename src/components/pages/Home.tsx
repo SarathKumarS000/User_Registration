@@ -10,7 +10,12 @@ import {
 import SizedBox from '../SizedBox';
 import styles from '../Styles';
 
-const Home = ({navigation}) => {
+interface HomeProps {
+  navigation: any;
+  route: any;
+}
+
+const Home: React.FC<HomeProps> = ({navigation}) => {
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safeAreaView}>

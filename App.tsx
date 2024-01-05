@@ -1,8 +1,5 @@
-// Import necessary modules and components from React, Redux, and React Navigation
 import React from 'react';
 import {Provider} from 'react-redux';
-import {configureStore} from '@reduxjs/toolkit';
-import userReducer from './src/components/redux/reducers';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Signup from './src/components/pages/SignUp';
@@ -10,11 +7,8 @@ import Login from './src/components/pages/SignIn';
 import Home from './src/components/pages/Home';
 import Profile from './src/components/pages/Profile';
 import UserDetails from './src/components/pages/UserDetails';
+import store from './src/components/redux/store';
 
-// Create a Redux store with the userReducer as the root reducer
-const store = configureStore({
-  reducer: userReducer,
-});
 // Create a stack navigator using React Navigation
 const Stack = createNativeStackNavigator();
 

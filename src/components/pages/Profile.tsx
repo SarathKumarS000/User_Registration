@@ -17,10 +17,11 @@ import {
 } from 'react-native';
 import {useForm} from 'react-hook-form';
 import {updateUserName} from '../redux/actions';
-import SizedBox from '../SizedBox';
 import styles from '../Styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import SizedBox from '../SizedBox';
+import {updateUserList} from '../redux/reducers';
 
 interface FormData {
   email: string;
@@ -32,14 +33,22 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
-  name: string;
 }
 
-const Profile = ({navigation, route}) => {
-  // State for the currently logged-in user
-  const [username, setUsername] = useState(route.params?.foundUser);
+interface ProfileProps {
+  navigation: any;
+  route: any;
+}
 
-  // React Hook Form setup for the form used in the modal
+const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
+  const dispatch = useDispatch();
+  const [usersData, setUsersData] = useState<User[]>([]);
+  const user = usersData.find(
+    (u: User) => u.email === route.params.foundUser.email,
+  );
+
+  const userList = useSelector((state: any) => state.user.userList);
+
   const form = useForm<FormData>({
     defaultValues: {
       email: '',
@@ -47,11 +56,8 @@ const Profile = ({navigation, route}) => {
     },
   });
 
-  const [usersData, setUsersData] = useState<User[]>([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [newName, setNewName] = useState('');
-  const dispatch = useDispatch();
-
   const drawerRef = useRef(null);
 
   const handleSidebarToggle = () => {
@@ -65,7 +71,6 @@ const Profile = ({navigation, route}) => {
       // await AsyncStorage.removeItem('usersData');
       navigation.navigate('Home');
     } catch (error) {
-      console.error('Error during logout:', error);
       Alert.alert('Error', 'Failed to logout');
     }
   };
@@ -80,23 +85,19 @@ const Profile = ({navigation, route}) => {
 
   const handleUpdateNameConfirm = () => {
     if (newName.length >= 4) {
-      const isUserNameRegistered = usersData.some(
+      const isUserNameRegistered = userList.some(
         (user: any) => user.userName === newName,
       );
       if (!isUserNameRegistered) {
-        dispatch(updateUserName(newName));
-        setUsername(prevUsername => ({
-          ...prevUsername,
-          userName: newName,
-        }));
-        const updatedUsersData = usersData.map((user: User) => {
+        dispatch(updateUserName(route.params.foundUser.email, newName));
+        const updatedUsersData = userList.map((user: User) => {
           if (user.email === route.params.foundUser.email) {
             return {...user, userName: newName};
           }
           return user;
         });
-        setUsersData(updatedUsersData);
         updateUserNameInAsyncStorage(newName);
+        setUsersData(updatedUsersData);
         setNewName('');
         setModalVisible(false);
         Alert.alert('Success', 'Username updated successfully!');
@@ -119,9 +120,8 @@ const Profile = ({navigation, route}) => {
       const userDataString = await AsyncStorage.getItem('usersData');
 
       if (userDataString) {
-        const parsedData = JSON.parse(userDataString);
+        const parsedData = JSON.parse(userDataString) as User[];
 
-        // Map through the users and update the username for the logged-in user
         const updatedData = parsedData.map((user: {email: any}) => {
           if (user.email === route.params.foundUser.email) {
             return {...user, userName: newName};
@@ -135,15 +135,33 @@ const Profile = ({navigation, route}) => {
     }
   };
 
+  const navigationView = () => (
+    <View>
+      <TouchableOpacity onPress={handleLogout}>
+        <View style={styles.button}>
+          <Text style={styles.buttonTitle}>Logout</Text>
+        </View>
+      </TouchableOpacity>
+
+      <SizedBox height={13} />
+
+      <TouchableOpacity onPress={handleUpdateUserName}>
+        <View style={styles.button}>
+          <Text style={styles.buttonTitle}>Update Username</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userDataString = await AsyncStorage.getItem('usersData');
-        console.log(userDataString, '123');
 
         if (userDataString) {
           const parsedData = JSON.parse(userDataString) as User[];
           setUsersData(parsedData);
+          dispatch(updateUserList(parsedData));
         } else {
           Alert.alert('Error', 'No user data found');
         }
@@ -151,8 +169,9 @@ const Profile = ({navigation, route}) => {
         console.error('Error retrieving data:', error);
       }
     };
+
     fetchUserData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -165,24 +184,8 @@ const Profile = ({navigation, route}) => {
               ref={drawerRef}
               drawerWidth={250}
               drawerBackgroundColor="transparent"
-              drawerPosition="right"
-              renderNavigationView={() => (
-                <View>
-                  <TouchableOpacity onPress={handleLogout}>
-                    <View style={styles.button}>
-                      <Text style={styles.buttonTitle}>Logout</Text>
-                    </View>
-                  </TouchableOpacity>
-
-                  <SizedBox height={13} />
-
-                  <TouchableOpacity onPress={handleUpdateUserName}>
-                    <View style={styles.button}>
-                      <Text style={styles.buttonTitle}>Update Username</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )}>
+              drawerPosition="left"
+              renderNavigationView={navigationView}>
               <Modal
                 animationType="slide"
                 transparent={true}
@@ -203,6 +206,7 @@ const Profile = ({navigation, route}) => {
                           message: '',
                         });
                       }}
+                      onSubmitEditing={handleUpdateNameConfirm}
                     />
                     {form.formState.errors?.newUsername && (
                       <Text style={styles.errorText}>
@@ -239,28 +243,11 @@ const Profile = ({navigation, route}) => {
               <Text style={styles.title}>
                 Welcome,{' '}
                 <Text style={{color: 'rgb(93, 95, 222)'}}>
-                  {username?.firstName}
+                  {user?.firstName}
                 </Text>
               </Text>
               <SizedBox height={13} />
-              <View style={styles.form}>
-                <Text style={styles.label}>Email:</Text>
-                <Text style={styles.textInput}>{username?.email}</Text>
-              </View>
-              <SizedBox height={8} />
-              <View style={styles.form}>
-                <Text style={styles.label}>Full Name:</Text>
-                <Text style={styles.textInput}>
-                  {username?.firstName + ' ' + username?.lastName}
-                </Text>
-              </View>
-              <SizedBox height={8} />
-              <View style={styles.form}>
-                <Text style={styles.label}>Username:</Text>
-                <Text style={styles.textInput}>{username?.userName}</Text>
-              </View>
 
-              <SizedBox height={37} />
               <View style={styles.boxContainer}>
                 <Text style={styles.boxHeading}>All Users List</Text>
                 <View style={styles.listContainer}>

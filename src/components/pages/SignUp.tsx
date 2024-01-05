@@ -53,7 +53,12 @@ const validationSchema = yup.object({
     .oneOf([yup.ref('password'), ''], 'Password doesnot match'),
 });
 
-const SignupPage = ({navigation}) => {
+interface SignUpProps {
+  navigation: any;
+  route: any;
+}
+
+const SignUp: React.FC<SignUpProps> = ({navigation}) => {
   const {
     control,
     handleSubmit,
@@ -315,9 +320,9 @@ const SignupPage = ({navigation}) => {
 
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
                 <View style={{alignItems: 'center'}}>
-                  <Text style={styles.textButton}>Home</Text>
+                  <Text style={styles.textButton}>Back</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
@@ -339,4 +344,4 @@ const SignupPage = ({navigation}) => {
   );
 };
 
-export default SignupPage;
+export default SignUp;
