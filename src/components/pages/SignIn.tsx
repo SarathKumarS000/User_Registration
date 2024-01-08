@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Keyboard,
@@ -34,6 +34,11 @@ const SignIn: React.FC<SignInProps> = ({navigation}) => {
     },
   });
   const passwordRef = useRef<TextInput>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const onSubmit = async () => {
     try {
@@ -132,7 +137,7 @@ const SignIn: React.FC<SignInProps> = ({navigation}) => {
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     ref={passwordRef}
-                    secureTextEntry
+                    secureTextEntry={!showPassword}
                     keyboardType="default"
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -143,6 +148,11 @@ const SignIn: React.FC<SignInProps> = ({navigation}) => {
                   />
                 )}
               />
+              <TouchableOpacity onPress={togglePasswordVisibility}>
+                <Text style={{color: '#FFFFFF', marginLeft: 10}}>
+                  {showPassword ? '🔒' : '👁️'}
+                </Text>
+              </TouchableOpacity>
             </View>
 
             <SizedBox height={16} />

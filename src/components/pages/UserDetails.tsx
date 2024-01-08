@@ -44,7 +44,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
   const handleUpdateNameConfirm = () => {
     if (newName.length >= 4) {
       const isUserNameRegistered = userList.some(
-        (u: User) => u.userName === newName,
+        (u: User) => u.userName.toLowerCase() === newName.toLowerCase(),
       );
       if (!isUserNameRegistered) {
         dispatch(updateUserName(route.params.user.email, newName));

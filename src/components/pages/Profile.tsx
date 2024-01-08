@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Alert,
   Keyboard,
@@ -22,6 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import SizedBox from '../SizedBox';
 import {updateUserList} from '../redux/reducers';
+import {useFocusEffect} from '@react-navigation/native';
 
 interface FormData {
   email: string;
@@ -68,8 +69,20 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
 
   const handleLogout = async () => {
     try {
-      // await AsyncStorage.removeItem('usersData');
       navigation.navigate('Home');
+
+      //Remove all data
+      // await AsyncStorage.removeItem('usersData');
+
+      //Remove a single user
+      // const existingData = await AsyncStorage.getItem('usersData');
+      // if (existingData) {
+      //   const parsedData = JSON.parse(existingData);
+      //   const updatedData = parsedData.filter(
+      //     (user: {email: string}) => user.email !== '#EMAIL',
+      //   );
+      //   await AsyncStorage.setItem('usersData', JSON.stringify(updatedData));
+      // }
     } catch (error) {
       Alert.alert('Error', 'Failed to logout');
     }
@@ -86,7 +99,7 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
   const handleUpdateNameConfirm = () => {
     if (newName.length >= 4) {
       const isUserNameRegistered = userList.some(
-        (user: any) => user.userName === newName,
+        (user: any) => user.userName.toLowerCase() === newName.toLowerCase(),
       );
       if (!isUserNameRegistered) {
         dispatch(updateUserName(route.params.foundUser.email, newName));
@@ -168,25 +181,27 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
     </View>
   );
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userDataString = await AsyncStorage.getItem('usersData');
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserData = async () => {
+        try {
+          const userDataString = await AsyncStorage.getItem('usersData');
 
-        if (userDataString) {
-          const parsedData = JSON.parse(userDataString) as User[];
-          setUsersData(parsedData);
-          dispatch(updateUserList(parsedData));
-        } else {
-          Alert.alert('Error', 'No user data found');
+          if (userDataString) {
+            const parsedData = JSON.parse(userDataString) as User[];
+            setUsersData(parsedData);
+            dispatch(updateUserList(parsedData));
+          } else {
+            Alert.alert('Error', 'No user data found');
+          }
+        } catch (error) {
+          console.error('Error retrieving data:', error);
         }
-      } catch (error) {
-        console.error('Error retrieving data:', error);
-      }
-    };
+      };
 
-    fetchUserData();
-  }, [dispatch]);
+      fetchUserData();
+    }, [dispatch]),
+  );
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

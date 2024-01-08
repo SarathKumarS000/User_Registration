@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -38,11 +38,15 @@ const validationSchema = yup.object({
   email: yup
     .string()
     .email('Invalid email address')
-    .required('Email is required'),
+    .required('Email is required')
+    .matches(
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+      'Invalid email format',
+    ),
   userName: yup
     .string()
     .required('User name is required')
-    .min(4, 'Must be at least 2 characters'),
+    .min(4, 'Must be at least 4 characters'),
   password: yup
     .string()
     .required('Password is required')
@@ -82,6 +86,12 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
   const passwordRef = useRef<TextInput>(null);
   const confirmPasswordRef = useRef<TextInput>(null);
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const onSubmit = handleSubmit(async (data: any) => {
     try {
       const storedData = await AsyncStorage.getItem('usersData');
@@ -108,6 +118,21 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
         `Name: ${data.firstName + ' ' + data.lastName}\nEmail: ${
           data.email
         }\nUsername: ${data.userName}`,
+        [
+          {
+            text: 'Stay Here',
+            onPress: () => {
+              reset();
+            },
+          },
+          {
+            text: 'Go to Login',
+            onPress: () => {
+              reset();
+              navigation.navigate('SignIn');
+            },
+          },
+        ],
       );
       reset();
     } catch (error) {
@@ -262,7 +287,7 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     ref={passwordRef}
-                    secureTextEntry
+                    secureTextEntry={!showPassword}
                     keyboardType="default"
                     onChangeText={onChange}
                     onSubmitEditing={() => {
@@ -277,6 +302,11 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
                   />
                 )}
               />
+              <TouchableOpacity onPress={togglePasswordVisibility}>
+                <Text style={{color: '#FFFFFF', marginLeft: 10}}>
+                  {showPassword ? '🔒' : '👁️'}
+                </Text>
+              </TouchableOpacity>
             </View>
             {errors.password && (
               <Text style={styles.errorText}>{errors.password.message}</Text>
