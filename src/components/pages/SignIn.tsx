@@ -23,7 +23,6 @@ interface FormData {
 
 interface SignInProps {
   navigation: any;
-  route: any;
 }
 
 const SignIn: React.FC<SignInProps> = ({navigation}) => {
@@ -79,6 +78,7 @@ const SignIn: React.FC<SignInProps> = ({navigation}) => {
         if (userDataString) {
           const userData = JSON.parse(userDataString);
           form.setValue('email', userData[userData.length - 1].email);
+          // form.setValue('password', userData[userData.length - 1].password);
           console.log(userDataString);
         }
       })

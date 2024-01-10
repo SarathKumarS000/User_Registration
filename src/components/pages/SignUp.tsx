@@ -59,7 +59,6 @@ const validationSchema = yup.object({
 
 interface SignUpProps {
   navigation: any;
-  route: any;
 }
 
 const SignUp: React.FC<SignUpProps> = ({navigation}) => {

@@ -12,7 +12,6 @@ import styles from '../Styles';
 
 interface HomeProps {
   navigation: any;
-  route: any;
 }
 
 const Home: React.FC<HomeProps> = ({navigation}) => {

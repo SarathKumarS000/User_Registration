@@ -9,16 +9,12 @@ import Profile from './src/components/pages/Profile';
 import UserDetails from './src/components/pages/UserDetails';
 import store from './src/components/redux/store';
 
-// Create a stack navigator using React Navigation
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    // Use the Redux Provider to make the Redux store available to all components
     <Provider store={store}>
-      {/* Set up the navigation container for navigation in the app */}
       <NavigationContainer>
-        {/* Create a stack navigator with various screens */}
         <Stack.Navigator>
           <Stack.Screen
             name="Home"
