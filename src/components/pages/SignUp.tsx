@@ -45,7 +45,7 @@ const validationSchema = yup.object({
     ),
   userName: yup
     .string()
-    .required('User name is required')
+    .required('Username is required')
     .min(4, 'Must be at least 4 characters'),
   password: yup
     .string()
@@ -162,6 +162,7 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     autoCapitalize="words"
+                    testID="firstName"
                     autoCorrect={false}
                     keyboardType="default"
                     onBlur={onBlur}
@@ -194,6 +195,7 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     ref={lastNameRef}
+                    testID="lastName"
                     autoCapitalize="words"
                     autoCorrect={false}
                     onBlur={onBlur}
@@ -226,6 +228,7 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     ref={emailRef}
+                    testID="email"
                     autoCapitalize="none"
                     autoCorrect={false}
                     onBlur={onBlur}
@@ -256,6 +259,7 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     ref={userNameRef}
+                    testID="userName"
                     autoCapitalize="none"
                     autoCorrect={false}
                     onBlur={onBlur}
@@ -286,6 +290,7 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     ref={passwordRef}
+                    testID="password"
                     secureTextEntry={!showPassword}
                     keyboardType="default"
                     onChangeText={onChange}
@@ -321,6 +326,7 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     ref={confirmPasswordRef}
+                    testID="confirmPassword"
                     secureTextEntry
                     keyboardType="default"
                     onChangeText={onChange}
