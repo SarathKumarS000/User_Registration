@@ -109,6 +109,7 @@ const SignIn: React.FC<SignInProps> = ({navigation}) => {
                 name="email"
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
+                    testID="email"
                     autoCapitalize="none"
                     autoCorrect={false}
                     onBlur={onBlur}
@@ -137,6 +138,7 @@ const SignIn: React.FC<SignInProps> = ({navigation}) => {
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     ref={passwordRef}
+                    testID="password"
                     secureTextEntry={!showPassword}
                     keyboardType="default"
                     onBlur={onBlur}
