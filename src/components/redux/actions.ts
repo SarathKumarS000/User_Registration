@@ -7,3 +7,8 @@ export const updateUserName = (email: string, newUserName: string) => {
     },
   };
 };
+
+export const addUser = (user: any) => ({
+  type: 'ADD_USER',
+  payload: user,
+});
