@@ -67,25 +67,25 @@ const SignIn: React.FC<SignInProps> = ({navigation}) => {
         Alert.alert('Error', 'No user data found');
       }
     } catch (error) {
-      console.error('Error during sign-in:', error);
+      // console.error('Error during sign-in:', error);
       Alert.alert('Error', 'Sign-in failed. Please try again.');
     }
   };
 
-  useEffect(() => {
-    AsyncStorage.getItem('usersData')
-      .then(userDataString => {
-        if (userDataString) {
-          const userData = JSON.parse(userDataString);
-          form.setValue('email', userData[userData.length - 1].email);
-          // form.setValue('password', userData[userData.length - 1].password);
-          console.log(userDataString);
-        }
-      })
-      .catch(error => {
-        console.error('Error retrieving data:', error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   AsyncStorage.getItem('usersData')
+  //     .then(userDataString => {
+  //       if (userDataString) {
+  //         const userData = JSON.parse(userDataString);
+  //         form.setValue('email', userData[userData.length - 1].email);
+  //         // form.setValue('password', userData[userData.length - 1].password);
+  //         console.log(userDataString);
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.error('Error retrieving data:', error);
+  //     });
+  // }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
