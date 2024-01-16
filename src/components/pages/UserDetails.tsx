@@ -13,6 +13,7 @@ import styles from '../Styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateUserName} from '../redux/actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {updateUserList} from '../redux/reducers';
 
 interface User {
   userName: string;
@@ -79,6 +80,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
         });
 
         await AsyncStorage.setItem('usersData', JSON.stringify(updatedData));
+        dispatch(updateUserList(updatedData));
       }
     } catch (error) {
       console.error('Error updating user name in AsyncStorage:', error);
@@ -87,7 +89,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}>
         <View style={styles.backButtonContainer}>
@@ -97,7 +99,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
           />
           <Text style={styles.backButtonText}>Back</Text>
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <View style={styles.fullUserDetailsContainer}>
         <Text style={styles.userTitle}>User Details</Text>
