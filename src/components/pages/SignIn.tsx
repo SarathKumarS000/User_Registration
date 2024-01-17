@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Alert,
   Keyboard,
@@ -14,7 +14,9 @@ import {
 import {Controller, useForm} from 'react-hook-form';
 import SizedBox from '../SizedBox';
 import styles from '../Styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../redux/rootReducer';
+import {loginUser} from '../redux/reducers';
 
 interface FormData {
   email: string;
@@ -39,53 +41,26 @@ const SignIn: React.FC<SignInProps> = ({navigation}) => {
     setShowPassword(!showPassword);
   };
 
-  const onSubmit = async () => {
-    try {
-      const userData: string | null = await AsyncStorage.getItem('usersData');
+  const dispatch = useDispatch();
+  const userList = useSelector((state: RootState) => state.user.userList);
 
-      if (userData) {
-        const parsedData = JSON.parse(userData);
-        const foundUser = parsedData.find(
-          (user: {
-            email: string;
-            password: string;
-            firstName: string;
-            lastName: string;
-            userName: string;
-          }) =>
-            (user.email === form.getValues('email') ||
-              user.userName === form.getValues('email')) &&
-            user.password === form.getValues('password'),
-        );
+  const onSubmit = () => {
+    const {email, password} = form.getValues();
 
-        if (foundUser) {
-          navigation.navigate('Profile', {foundUser});
-        } else {
-          Alert.alert('Error', 'Invalid Credentials');
-        }
-      } else {
-        Alert.alert('Error', 'No user data found');
-      }
-    } catch (error) {
-      // console.error('Error during sign-in:', error);
-      Alert.alert('Error', 'Sign-in failed. Please try again.');
+    const foundUser = userList.find(
+      user =>
+        (user.email.toLowerCase() === email.toLowerCase() ||
+          user.userName.toLowerCase() === email.toLowerCase()) &&
+        user.password === password,
+    );
+
+    if (foundUser) {
+      dispatch(loginUser(foundUser));
+      navigation.navigate('Profile', {foundUser});
+    } else {
+      Alert.alert('Error', 'Invalid Credentials');
     }
   };
-
-  // useEffect(() => {
-  //   AsyncStorage.getItem('usersData')
-  //     .then(userDataString => {
-  //       if (userDataString) {
-  //         const userData = JSON.parse(userDataString);
-  //         form.setValue('email', userData[userData.length - 1].email);
-  //         // form.setValue('password', userData[userData.length - 1].password);
-  //         console.log(userDataString);
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.error('Error retrieving data:', error);
-  //     });
-  // }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -1,19 +1,10 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Alert,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Modal} from 'react-native';
 import {useForm} from 'react-hook-form';
 import styles from '../Styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateUserName} from '../redux/actions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {updateUserList} from '../redux/reducers';
+import ChangeUsernameModal from '../modal/ChangeUsernameModal';
 
 interface User {
   userName: string;
@@ -49,7 +40,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
       );
       if (!isUserNameRegistered) {
         dispatch(updateUserName(route.params.user.email, newName));
-        updateUserNameInAsyncStorage(newName);
         setNewName('');
         setModalVisible(false);
       } else {
@@ -66,41 +56,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
     }
   };
 
-  const updateUserNameInAsyncStorage = async (newName: string) => {
-    try {
-      const userDataString = await AsyncStorage.getItem('usersData');
-
-      if (userDataString) {
-        const parsedData = JSON.parse(userDataString);
-        const updatedData = parsedData.map((userData: User) => {
-          if (userData.email === route.params.user.email) {
-            return {...userData, userName: newName};
-          }
-          return userData;
-        });
-
-        await AsyncStorage.setItem('usersData', JSON.stringify(updatedData));
-        dispatch(updateUserList(updatedData));
-      }
-    } catch (error) {
-      console.error('Error updating user name in AsyncStorage:', error);
-    }
-  };
-
   return (
     <View style={styles.container}>
-      {/* <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}>
-        <View style={styles.backButtonContainer}>
-          <Image
-            source={require('../assets/back-icon.png')}
-            style={styles.backButtonIcon}
-          />
-          <Text style={styles.backButtonText}>Back</Text>
-        </View>
-      </TouchableOpacity> */}
-
       <View style={styles.fullUserDetailsContainer}>
         <Text style={styles.userTitle}>User Details</Text>
         <View style={styles.separator} />
@@ -130,44 +87,13 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
         transparent={true}
         visible={isModalVisible}
         onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Change Username</Text>
-            <TextInput
-              style={styles.modalTextInput}
-              placeholder="Enter new username"
-              value={newName}
-              onChangeText={text => {
-                setNewName(text);
-                form.setError('newUsername', {
-                  type: 'manual',
-                  message: '',
-                });
-              }}
-              onSubmitEditing={handleUpdateNameConfirm}
-            />
-
-            {form.formState.errors?.newUsername && (
-              <Text style={styles.errorText}>
-                {form.formState.errors?.newUsername.message}
-              </Text>
-            )}
-
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={styles.modalCancelButton}
-                onPress={() => setModalVisible(false)}>
-                <Text style={styles.modalCancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.modalUpdateButton}
-                onPress={handleUpdateNameConfirm}>
-                <Text style={styles.modalUpdateButtonText}>Update</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+        <ChangeUsernameModal
+          newName={newName}
+          handleUpdateNameConfirm={handleUpdateNameConfirm}
+          setNewName={setNewName}
+          formError={form.formState.errors?.newUsername?.message}
+          handleModalClose={() => setModalVisible(false)}
+        />
       </Modal>
     </View>
   );

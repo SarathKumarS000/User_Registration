@@ -5,10 +5,12 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  password: string;
 }
 
 interface UserState {
   userList: User[];
+  loggedUser?: User;
 }
 
 const initialState: UserState = {
@@ -31,8 +33,11 @@ const userSlice = createSlice({
         user.email === email ? {...user, userName: newUserName} : user,
       );
     },
+    loginUser: (state, action: PayloadAction<User>) => {
+      state.loggedUser = action.payload;
+    },
   },
 });
 
-export const {updateUserList, updateUserName} = userSlice.actions;
+export const {updateUserList, updateUserName, loginUser} = userSlice.actions;
 export default userSlice.reducer;

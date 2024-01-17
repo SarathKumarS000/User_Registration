@@ -1,12 +1,11 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {persistReducer, persistStore} from 'redux-persist';
 import rootReducer from './rootReducer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import storage from '@react-native-async-storage/async-storage';
 
 const persistConfig = {
   key: 'root',
-  storage: AsyncStorage,
-  whitelist: ['user'],
+  storage: storage,
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

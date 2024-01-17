@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Keyboard,
@@ -13,16 +13,14 @@ import {
   Image,
   DrawerLayoutAndroid,
   Modal,
-  TextInput,
 } from 'react-native';
 import {useForm} from 'react-hook-form';
 import {updateUserName} from '../redux/actions';
 import styles from '../Styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import SizedBox from '../SizedBox';
 import {updateUserList} from '../redux/reducers';
-import {useFocusEffect} from '@react-navigation/native';
+import ChangeUsernameModal from '../modal/ChangeUsernameModal';
 
 interface FormData {
   email: string;
@@ -34,6 +32,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  password: string;
 }
 
 interface ProfileProps {
@@ -44,9 +43,9 @@ interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
   const dispatch = useDispatch();
   const [usersData, setUsersData] = useState<User[]>([]);
-  const user = usersData.find(
-    (u: User) => u.email === route.params.foundUser.email,
-  );
+  const user = route.params?.foundUser
+    ? usersData.find((u: User) => u.email === route.params.foundUser.email)
+    : null;
 
   const userList = useSelector((state: any) => state.user.userList);
 
@@ -70,30 +69,9 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
   const handleLogout = async () => {
     try {
       navigation.navigate('Home');
-
-      //Remove all data
-      // await AsyncStorage.removeItem('usersData');
-
-      //Remove a single user
-      // const existingData = await AsyncStorage.getItem('usersData');
-      // if (existingData) {
-      //   const parsedData = JSON.parse(existingData);
-      //   const updatedData = parsedData.filter(
-      //     (user: {email: string}) => user.email !== '#EMAIL',
-      //   );
-      //   await AsyncStorage.setItem('usersData', JSON.stringify(updatedData));
-      // }
     } catch (error) {
       Alert.alert('Error', 'Failed to logout');
     }
-  };
-
-  const handleUpdateUserName = () => {
-    setModalVisible(true);
-  };
-
-  const handleModalClose = () => {
-    setModalVisible(false);
   };
 
   const handleUpdateNameConfirm = () => {
@@ -109,7 +87,6 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
           }
           return user;
         });
-        updateUserNameInAsyncStorage(newName);
         setUsersData(updatedUsersData);
         setNewName('');
         setModalVisible(false);
@@ -127,25 +104,22 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
     }
   };
 
-  const updateUserNameInAsyncStorage = async (newName: string) => {
+  const fetchUserData = async () => {
     try {
-      const userDataString = await AsyncStorage.getItem('usersData');
-
-      if (userDataString) {
-        const parsedData = JSON.parse(userDataString) as User[];
-
-        const updatedData = parsedData.map((user: User) => {
-          if (user.email === route.params.foundUser.email) {
-            return {...user, userName: newName} as User;
-          }
-          return user;
-        });
-        await AsyncStorage.setItem('usersData', JSON.stringify(updatedData));
+      if (userList) {
+        setUsersData(userList);
+        dispatch(updateUserList(userList));
+      } else {
+        Alert.alert('Error', 'No user data found');
       }
     } catch (error) {
-      console.error('Error updating user name in AsyncStorage:', error);
+      console.error('Error retrieving data:', error);
     }
   };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   const navigationView = () => (
     <View style={styles.drawerContainer}>
@@ -160,7 +134,9 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
       </View>
       <TouchableOpacity
         style={styles.drawerItem}
-        onPress={handleUpdateUserName}
+        onPress={() => {
+          setModalVisible(true);
+        }}
         activeOpacity={0.7}>
         <Image
           source={require('../assets/settings-icon.png')}
@@ -181,28 +157,6 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
     </View>
   );
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchUserData = async () => {
-        try {
-          const userDataString = await AsyncStorage.getItem('usersData');
-
-          if (userDataString) {
-            const parsedData = JSON.parse(userDataString) as User[];
-            setUsersData(parsedData);
-            dispatch(updateUserList(parsedData));
-          } else {
-            Alert.alert('Error', 'No user data found');
-          }
-        } catch (error) {
-          console.error('Error retrieving data:', error);
-        }
-      };
-
-      fetchUserData();
-    }, [dispatch]),
-  );
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.root}>
@@ -219,45 +173,18 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
                 animationType="slide"
                 transparent={true}
                 visible={isModalVisible}
-                onRequestClose={handleModalClose}>
-                <View style={styles.modalContainer}>
-                  <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Change Username</Text>
-                    <TextInput
-                      style={styles.modalTextInput}
-                      placeholder="Enter new username"
-                      value={newName}
-                      onChangeText={text => {
-                        setNewName(text);
-                        form.setError('newUsername', {
-                          type: 'manual',
-                          message: '',
-                        });
-                      }}
-                      onSubmitEditing={handleUpdateNameConfirm}
-                    />
-
-                    {form.formState.errors?.newUsername && (
-                      <Text style={styles.errorText}>
-                        {form.formState.errors?.newUsername.message}
-                      </Text>
-                    )}
-
-                    <View style={styles.modalButtonContainer}>
-                      <TouchableOpacity
-                        style={styles.modalCancelButton}
-                        onPress={handleModalClose}>
-                        <Text style={styles.modalCancelButtonText}>Cancel</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={styles.modalUpdateButton}
-                        onPress={handleUpdateNameConfirm}>
-                        <Text style={styles.modalUpdateButtonText}>Update</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
+                onRequestClose={() => {
+                  setModalVisible(false);
+                }}>
+                <ChangeUsernameModal
+                  newName={newName}
+                  handleUpdateNameConfirm={handleUpdateNameConfirm}
+                  setNewName={setNewName}
+                  formError={form.formState.errors?.newUsername?.message}
+                  handleModalClose={() => {
+                    setModalVisible(false);
+                  }}
+                />
               </Modal>
 
               <TouchableOpacity onPress={handleSidebarToggle}>

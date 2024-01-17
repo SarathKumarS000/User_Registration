@@ -14,12 +14,13 @@ import {
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import SizedBox from '../SizedBox';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../Styles';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
+import {useDispatch, useSelector} from 'react-redux';
+import {updateUserList} from '../redux/reducers';
+import {RootState} from '../redux/rootReducer';
 
-// Define the structure of the user object for form data
 interface User {
   firstName: string;
   lastName: string;
@@ -78,7 +79,6 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
     resolver: yupResolver(validationSchema),
   });
 
-  // Refs for focusing on the next TextInput
   const lastNameRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
   const userNameRef = useRef<TextInput>(null);
@@ -87,30 +87,26 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const dispatch = useDispatch();
+  const users = useSelector((state: RootState) => state.user.userList);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const onSubmit = handleSubmit(async (data: any) => {
     try {
-      const storedData = await AsyncStorage.getItem('usersData');
-      const users: any[] = storedData ? JSON.parse(storedData) : [];
-
       const isEmailRegistered = users.some(
         (user: any) => user.email === data.email,
       );
       const isUserNameRegistered = users.some(
         (user: any) => user.userName === data.userName,
       );
-      if (isEmailRegistered) {
-        Alert.alert('Error', 'Email is already registered');
-        return;
-      } else if (isUserNameRegistered) {
-        Alert.alert('Error', 'Username is already registered');
+      if (isEmailRegistered || isUserNameRegistered) {
+        Alert.alert('Error', 'Email/Username is already registered');
         return;
       } else {
-        const newUsers = [...users, data];
-        await AsyncStorage.setItem('usersData', JSON.stringify(newUsers));
+        dispatch(updateUserList([...users, data]));
       }
       Alert.alert(
         'Data stored successfully',
@@ -140,7 +136,6 @@ const SignUp: React.FC<SignUpProps> = ({navigation}) => {
   });
 
   return (
-    // Wrapping the entire view in TouchableWithoutFeedback to dismiss the keyboard when tapping outside of TextInputs
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.root}>
         <SafeAreaView style={styles.safeAreaView}>
