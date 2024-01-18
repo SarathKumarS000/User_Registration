@@ -133,6 +133,7 @@ export default StyleSheet.create({
     borderRadius: 8,
     height: 48,
     justifyContent: 'center',
+    marginBottom: 16,
   },
   buttonTitle: {
     color: '#FFFFFF',
@@ -173,6 +174,7 @@ export default StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     lineHeight: 22,
+    marginBottom: 16,
   },
   textButton: {
     color: '#FFFFFF',
@@ -189,6 +191,7 @@ export default StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     lineHeight: 34,
+    marginBottom: 8,
   },
   errorText: {
     color: 'red',
@@ -200,6 +203,7 @@ export default StyleSheet.create({
   hamburgerIcon: {
     width: 35,
     height: 35,
+    marginBottom: 70,
   },
   boxContainer: {
     backgroundColor: 'rgba(235, 235, 245, 0.8)',

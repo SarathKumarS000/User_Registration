@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import SizedBox from '../SizedBox';
 import styles from '../Styles';
 
 interface HomeProps {
@@ -23,18 +22,13 @@ const Home: React.FC<HomeProps> = ({navigation}) => {
           style={styles.content}>
           <Text style={styles.title}>Welcome Home!</Text>
 
-          <SizedBox height={8} />
-
           <Text style={styles.subtitle}>Explore the app's features here!</Text>
-
-          <SizedBox height={16} />
 
           <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
             <View style={styles.button}>
               <Text style={styles.buttonTitle}>Sign In</Text>
             </View>
           </TouchableOpacity>
-          <SizedBox height={16} />
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
             <View style={styles.button}>
               <Text style={styles.buttonTitle}>Sign Up</Text>

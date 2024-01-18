@@ -18,21 +18,13 @@ import {useForm} from 'react-hook-form';
 import {updateUserName} from '../redux/actions';
 import styles from '../Styles';
 import {useDispatch, useSelector} from 'react-redux';
-import SizedBox from '../SizedBox';
 import {updateUserList} from '../redux/reducers';
 import ChangeUsernameModal from '../modal/ChangeUsernameModal';
+import {User} from '../common/User';
 
 interface FormData {
   email: string;
   newUsername: string;
-}
-
-interface User {
-  userName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
 }
 
 interface ProfileProps {
@@ -195,7 +187,6 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
                   />
                 </View>
               </TouchableOpacity>
-              <SizedBox height={70} />
 
               <Text style={styles.title}>
                 Welcome,{' '}
@@ -203,7 +194,6 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
                   {user?.firstName}
                 </Text>
               </Text>
-              <SizedBox height={13} />
 
               <View style={styles.boxContainer}>
                 <Text style={styles.boxHeading}>All Users List</Text>
