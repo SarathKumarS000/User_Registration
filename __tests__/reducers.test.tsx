@@ -2,7 +2,7 @@ import userReducer, {
   updateUserList,
   updateUserName,
 } from '../src/components/redux/reducers';
-import {User} from '../src/components/common/User';
+import {User} from '../src/components/common/Interface';
 interface UserState {
   userList: User[];
   loggedUser?: User;

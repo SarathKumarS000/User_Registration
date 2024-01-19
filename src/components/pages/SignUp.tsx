@@ -18,12 +18,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {updateUserList} from '../redux/reducers';
 import {RootState} from '../redux/rootReducer';
 import Input from '../common/Input';
-import {User} from '../common/User';
-interface SignUpProps {
-  navigation: any;
-}
+import {User, RouteProps} from '../common/Interface';
 
-const SignUp: React.FC<SignUpProps> = ({navigation}) => {
+const SignUp: React.FC<RouteProps> = ({navigation}) => {
   const {
     control,
     handleSubmit,

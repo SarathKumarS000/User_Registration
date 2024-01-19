@@ -8,12 +8,9 @@ import {
   Platform,
 } from 'react-native';
 import styles from '../Styles';
+import {RouteProps} from '../common/Interface';
 
-interface HomeProps {
-  navigation: any;
-}
-
-const Home: React.FC<HomeProps> = ({navigation}) => {
+const Home: React.FC<RouteProps> = ({navigation}) => {
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safeAreaView}>

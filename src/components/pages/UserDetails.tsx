@@ -5,23 +5,12 @@ import styles from '../Styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateUserName} from '../redux/actions';
 import ChangeUsernameModal from '../modal/ChangeUsernameModal';
+import {User, RouteProps} from '../common/Interface';
 
-interface User {
-  userName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
-interface UserDetailsProps {
-  route: any;
-  navigation: any;
-}
-
-const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
+const UserDetails: React.FC<RouteProps> = ({route}) => {
   const dispatch = useDispatch();
   const user = useSelector((state: any) =>
-    state.user.userList.find((u: User) => u.email === route.params.user.email),
+    state.user.userList.find((u: User) => u.email === route.params.user),
   );
   const userList = useSelector((state: any) => state.user.userList);
 
@@ -39,7 +28,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
         (u: User) => u.userName.toLowerCase() === newName.toLowerCase(),
       );
       if (!isUserNameRegistered) {
-        dispatch(updateUserName(route.params.user.email, newName));
+        dispatch(updateUserName(user.email, newName));
         setNewName('');
         setModalVisible(false);
       } else {
@@ -60,7 +49,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
     <View style={styles.container}>
       <View style={styles.fullUserDetailsContainer}>
         <Text style={styles.userTitle}>User Details</Text>
-        <View style={styles.separator} />
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Name:</Text>
           <Text style={styles.detailValue}>

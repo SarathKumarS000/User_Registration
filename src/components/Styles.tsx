@@ -31,12 +31,9 @@ export default StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: '#FFFFFF',
-    marginBottom: 10,
-  },
-  separator: {
+    marginBottom: 20,
     borderBottomColor: '#6E4C88',
     borderBottomWidth: 1,
-    marginBottom: 16,
   },
   detailRow: {
     flexDirection: 'row',

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Alert,
   Keyboard,
@@ -18,26 +18,12 @@ import {useForm} from 'react-hook-form';
 import {updateUserName} from '../redux/actions';
 import styles from '../Styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {updateUserList} from '../redux/reducers';
 import ChangeUsernameModal from '../modal/ChangeUsernameModal';
-import {User} from '../common/User';
+import {FormData, RouteProps} from '../common/Interface';
 
-interface FormData {
-  email: string;
-  newUsername: string;
-}
-
-interface ProfileProps {
-  navigation: any;
-  route: any;
-}
-
-const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
+const Profile: React.FC<RouteProps> = ({navigation, route}) => {
   const dispatch = useDispatch();
-  const [usersData, setUsersData] = useState<User[]>([]);
-  const user = route.params?.foundUser
-    ? usersData.find((u: User) => u.email === route.params.foundUser.email)
-    : null;
+  const user = route.params?.foundUser;
 
   const userList = useSelector((state: any) => state.user.userList);
 
@@ -72,14 +58,7 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
         (user: any) => user.userName.toLowerCase() === newName.toLowerCase(),
       );
       if (!isUserNameRegistered) {
-        dispatch(updateUserName(route.params.foundUser.email, newName));
-        const updatedUsersData = userList.map((user: User) => {
-          if (user.email === route.params.foundUser.email) {
-            return {...user, userName: newName};
-          }
-          return user;
-        });
-        setUsersData(updatedUsersData);
+        dispatch(updateUserName(user.email, newName));
         setNewName('');
         setModalVisible(false);
       } else {
@@ -95,23 +74,6 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
       });
     }
   };
-
-  const fetchUserData = async () => {
-    try {
-      if (userList) {
-        setUsersData(userList);
-        dispatch(updateUserList(userList));
-      } else {
-        Alert.alert('Error', 'No user data found');
-      }
-    } catch (error) {
-      console.error('Error retrieving data:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
 
   const navigationView = () => (
     <View style={styles.drawerContainer}>
@@ -204,7 +166,7 @@ const Profile: React.FC<ProfileProps> = ({navigation, route}) => {
                       <TouchableOpacity
                         onPress={() => {
                           navigation.navigate('UserDetails', {
-                            user: item,
+                            user: item.email,
                           });
                         }}>
                         <View style={styles.userRow}>

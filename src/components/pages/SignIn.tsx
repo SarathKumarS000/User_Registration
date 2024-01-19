@@ -17,17 +17,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../redux/rootReducer';
 import {loginUser} from '../redux/reducers';
 import Input from '../common/Input';
+import {FormData, RouteProps} from '../common/Interface';
 
-interface FormData {
-  email: string;
-  password: string;
-}
-
-interface SignInProps {
-  navigation: any;
-}
-
-const SignIn: React.FC<SignInProps> = ({navigation}) => {
+const SignIn: React.FC<RouteProps> = ({navigation}) => {
   const form = useForm<FormData>({
     defaultValues: {
       email: '',
