@@ -200,7 +200,7 @@ export default StyleSheet.create({
   hamburgerIcon: {
     width: 35,
     height: 35,
-    marginBottom: 70,
+    marginTop: 40,
   },
   boxContainer: {
     backgroundColor: 'rgba(235, 235, 245, 0.8)',

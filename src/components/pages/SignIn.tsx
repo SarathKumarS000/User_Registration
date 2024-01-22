@@ -18,6 +18,7 @@ import {RootState} from '../redux/rootReducer';
 import {loginUser} from '../redux/reducers';
 import Input from '../common/Input';
 import {FormData, RouteProps} from '../common/Interface';
+// import DrawerNavigators from '../drawer/DrawerNavigator';
 
 const SignIn: React.FC<RouteProps> = ({navigation}) => {
   const form = useForm<FormData>({
@@ -49,7 +50,7 @@ const SignIn: React.FC<RouteProps> = ({navigation}) => {
 
     if (foundUser) {
       dispatch(loginUser(foundUser));
-      navigation.navigate('Profile', {foundUser});
+      // navigation.navigate('DrawerNavigators');
     } else {
       Alert.alert('Error', 'Invalid Credentials');
     }

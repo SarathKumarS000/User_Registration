@@ -3,7 +3,7 @@ import {User} from '../common/Interface';
 
 interface UserState {
   userList: User[];
-  loggedUser?: User;
+  loggedUser?: User | null;
 }
 
 const initialState: UserState = {
@@ -26,7 +26,7 @@ const userSlice = createSlice({
         user.email === email ? {...user, userName: newUserName} : user,
       );
     },
-    loginUser: (state, action: PayloadAction<User>) => {
+    loginUser: (state, action: PayloadAction<User | null>) => {
       state.loggedUser = action.payload;
     },
   },

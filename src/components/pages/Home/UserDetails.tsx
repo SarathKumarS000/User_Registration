@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, Modal} from 'react-native';
 import {useForm} from 'react-hook-form';
-import styles from '../Styles';
+import styles from '../../Styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {updateUserName} from '../redux/actions';
-import ChangeUsernameModal from '../modal/ChangeUsernameModal';
-import {User, RouteProps} from '../common/Interface';
+import {updateUserName} from '../../redux/actions';
+import ChangeUsernameModal from '../../modal/ChangeUsernameModal';
+import {User, RouteProps} from '../../common/Interface';
 
 const UserDetails: React.FC<RouteProps> = ({route}) => {
   const dispatch = useDispatch();

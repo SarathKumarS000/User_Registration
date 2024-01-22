@@ -3,15 +3,14 @@ import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {store, persistor} from './src/components/redux/store';
 import {PersistGate} from 'redux-persist/integration/react';
-
-import HomeStack from './NavigationStack';
+import Navigators from './RootStack/Navigator';
 
 const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-          <HomeStack />
+          <Navigators />
         </NavigationContainer>
       </PersistGate>
     </Provider>
