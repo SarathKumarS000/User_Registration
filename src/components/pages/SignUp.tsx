@@ -14,11 +14,11 @@ import {
 } from 'react-native';
 import {useForm} from 'react-hook-form';
 import styles from '../Styles';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {updateUserList} from '../redux/reducers';
-import {RootState} from '../redux/rootReducer';
 import Input from '../common/Input';
 import {User, RouteProps} from '../common/Interface';
+import {useUserList} from '../common/Selectors';
 
 const SignUp: React.FC<RouteProps> = ({navigation}) => {
   const {
@@ -26,15 +26,7 @@ const SignUp: React.FC<RouteProps> = ({navigation}) => {
     handleSubmit,
     reset,
     formState: {errors},
-  } = useForm<User>({
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      userName: '',
-      password: '',
-    },
-  });
+  } = useForm<User>();
 
   const lastNameRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
@@ -45,7 +37,7 @@ const SignUp: React.FC<RouteProps> = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
-  const users = useSelector((state: RootState) => state.user.userList);
+  const users = useUserList();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -107,7 +99,6 @@ const SignUp: React.FC<RouteProps> = ({navigation}) => {
               control={control}
               name="firstName"
               label="First Name"
-              autoCapitalize="words"
               testID="firstName"
               secureTextEntry={false}
               onSubmitEditing={() => {
@@ -115,9 +106,7 @@ const SignUp: React.FC<RouteProps> = ({navigation}) => {
                   lastNameRef.current.focus();
                 }
               }}
-              keyboardType="default"
               error={errors.firstName?.message}
-              textContentType="username"
               rules={{
                 required: 'First name is required',
                 minLength: {value: 2, message: 'Must be at least 2 characters'},
@@ -130,16 +119,12 @@ const SignUp: React.FC<RouteProps> = ({navigation}) => {
               label="Last Name"
               testID="lastName"
               inputRef={lastNameRef}
-              secureTextEntry={false}
               onSubmitEditing={() => {
                 if (emailRef.current) {
                   emailRef.current.focus();
                 }
               }}
-              keyboardType="default"
               error={errors.lastName?.message}
-              textContentType="familyName"
-              autoCapitalize="words"
               rules={{
                 required: 'Last name is required',
               }}
@@ -151,16 +136,12 @@ const SignUp: React.FC<RouteProps> = ({navigation}) => {
               label="Email"
               testID="email"
               inputRef={emailRef}
-              secureTextEntry={false}
               onSubmitEditing={() => {
                 if (userNameRef.current) {
                   userNameRef.current.focus();
                 }
               }}
-              keyboardType="default"
               error={errors.email?.message}
-              textContentType="emailAddress"
-              autoCapitalize="none"
               rules={{
                 required: 'Email is required',
                 pattern: {
@@ -176,16 +157,12 @@ const SignUp: React.FC<RouteProps> = ({navigation}) => {
               label="Username"
               testID="userName"
               inputRef={userNameRef}
-              secureTextEntry={false}
               onSubmitEditing={() => {
                 if (passwordRef.current) {
                   passwordRef.current.focus();
                 }
               }}
-              keyboardType="default"
               error={errors.userName?.message}
-              textContentType="username"
-              autoCapitalize="none"
               rules={{
                 required: 'Username is required',
                 minLength: {value: 4, message: 'Must be at least 4 characters'},
@@ -204,10 +181,7 @@ const SignUp: React.FC<RouteProps> = ({navigation}) => {
                   confirmPasswordRef.current.focus();
                 }
               }}
-              keyboardType="default"
               error={errors.password?.message}
-              textContentType="password"
-              autoCapitalize="none"
               togglePasswordVisibility={togglePasswordVisibility}
               showPassword={showPassword}
               rules={{
@@ -224,10 +198,7 @@ const SignUp: React.FC<RouteProps> = ({navigation}) => {
               inputRef={confirmPasswordRef}
               secureTextEntry
               onSubmitEditing={onSubmit}
-              keyboardType="default"
               error={errors.confirmPassword?.message}
-              textContentType="password"
-              autoCapitalize="none"
               rules={{
                 required: 'Confirm password is required',
                 validate: (value: any, {password}: any) =>

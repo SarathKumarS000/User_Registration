@@ -1,13 +1,12 @@
-import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {Alert, View, Image, Text, TouchableOpacity} from 'react-native';
 import styles from '../Styles';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../redux/rootReducer';
+import {useDispatch} from 'react-redux';
 import {loginUser} from '../redux/reducers';
+import {useIsLoggedIn} from '../common/Selectors';
 
 const DrawerMenu = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user.loggedUser);
+  const user = useIsLoggedIn();
   const handleLogout = async () => {
     try {
       dispatch(loginUser(null));

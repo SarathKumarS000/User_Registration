@@ -1,7 +1,12 @@
 import React from 'react';
 import {render, fireEvent, waitFor} from '@testing-library/react-native';
 import SignUp from '../src/components/pages/SignUp';
+import {Provider} from 'react-redux';
+import {store} from '../src/components/redux/store';
+import {persistor} from '../src/components/redux/store';
+import {PersistGate} from 'redux-persist/integration/react';
 import {Alert} from 'react-native';
+import {cleanup} from '@testing-library/react-native';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(),
@@ -15,7 +20,13 @@ jest.mock('react-native/Libraries/Alert/Alert', () => ({
 
 describe('SignUp', () => {
   test('renders correctly', () => {
-    const {getByTestId} = render(<SignUp navigation={undefined} />);
+    const {getByTestId} = render(
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <SignUp navigation={undefined} route={undefined} />
+        </PersistGate>
+      </Provider>,
+    );
 
     expect(getByTestId('firstName')).toBeTruthy();
     expect(getByTestId('lastName')).toBeTruthy();
@@ -26,7 +37,13 @@ describe('SignUp', () => {
   });
 
   test('validates user input and shows error messages', async () => {
-    const {getByTestId, getByText} = render(<SignUp navigation={undefined} />);
+    const {getByTestId, getByText} = render(
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <SignUp navigation={undefined} route={undefined} />
+        </PersistGate>
+      </Provider>,
+    );
 
     fireEvent.press(getByText('Register'));
 
@@ -50,15 +67,21 @@ describe('SignUp', () => {
 
     await waitFor(() => {
       expect(getByText('Must be at least 2 characters')).toBeTruthy();
-      expect(getByText('Invalid email address')).toBeTruthy();
+      expect(getByText('Invalid email format')).toBeTruthy();
       expect(getByText('Must be at least 4 characters')).toBeTruthy();
       expect(getByText('Must be at least 8 characters')).toBeTruthy();
-      expect(getByText('Password doesnot match')).toBeTruthy();
+      expect(getByText('Passwords do not match')).toBeTruthy();
     });
   });
 
   test('successfully registers a new user', async () => {
-    const {getByTestId, getByText} = render(<SignUp navigation={undefined} />);
+    const {getByTestId, getByText} = render(
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <SignUp navigation={undefined} route={undefined} />
+        </PersistGate>
+      </Provider>,
+    );
 
     fireEvent.changeText(getByTestId('firstName'), 'John');
     fireEvent.changeText(getByTestId('lastName'), 'Doe');
@@ -75,5 +98,20 @@ describe('SignUp', () => {
       expect.stringContaining('John'),
       expect.any(Array),
     );
+  });
+  afterAll(async () => {
+    // Close the Redux Persist store to release resources
+    await persistor.flush();
+    await persistor.purge();
+    persistor.pause();
+    persistor.purge();
+    persistor.persist();
+    persistor.flush();
+    // persistor.resume();
+    persistor.persist();
+    persistor.flush();
+
+    // Clean up any resources used by testing-library
+    cleanup();
   });
 });

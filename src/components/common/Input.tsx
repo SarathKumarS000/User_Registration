@@ -10,13 +10,10 @@ interface CommonInputProps {
   subtitle?: string;
   label: string;
   testID: string;
-  autoCapitalize: any;
   inputRef?: React.RefObject<TextInput | null>;
   onBlur?: () => void;
   onSubmitEditing?: () => void;
   secureTextEntry?: boolean;
-  keyboardType?: any;
-  textContentType: any;
   error?: string;
   togglePasswordVisibility?: any;
   showPassword?: any;
@@ -29,12 +26,9 @@ const CommonInput: React.FC<CommonInputProps> = ({
   label,
   testID,
   inputRef,
-  autoCapitalize,
   onBlur,
   onSubmitEditing,
   secureTextEntry,
-  keyboardType,
-  textContentType,
   error,
   togglePasswordVisibility,
   showPassword,
@@ -51,15 +45,12 @@ const CommonInput: React.FC<CommonInputProps> = ({
             <TextInput
               ref={inputRef as React.RefObject<TextInput>}
               testID={testID}
-              autoCapitalize={autoCapitalize}
               autoCorrect={false}
               onBlur={onBlur}
               onChangeText={field.onChange}
               value={field.value}
               secureTextEntry={secureTextEntry}
-              keyboardType={keyboardType}
               style={styles.textInput}
-              textContentType={textContentType}
               onSubmitEditing={onSubmitEditing}
             />
           )}

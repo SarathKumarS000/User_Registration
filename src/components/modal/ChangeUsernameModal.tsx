@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Modal, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import styles from '../Styles';
 
 interface ChangeUsernameModalProps {
@@ -7,7 +7,8 @@ interface ChangeUsernameModalProps {
   handleUpdateNameConfirm: () => void;
   setNewName: React.Dispatch<React.SetStateAction<string>>;
   formError: string | undefined;
-  handleModalClose: () => void;
+  isModalVisible: boolean;
+  setModalVisible: Function;
 }
 
 const ChangeUsernameModal: React.FC<ChangeUsernameModalProps> = ({
@@ -15,39 +16,44 @@ const ChangeUsernameModal: React.FC<ChangeUsernameModalProps> = ({
   handleUpdateNameConfirm,
   setNewName,
   formError,
-  handleModalClose,
+  isModalVisible,
+  setModalVisible,
 }) => {
   return (
-    <View style={styles.modalContainer}>
-      <View style={styles.modalContent}>
-        <Text style={styles.modalTitle}>Change Username</Text>
-        <TextInput
-          style={styles.modalTextInput}
-          placeholder="Enter new username"
-          value={newName}
-          onChangeText={text => {
-            setNewName(text);
-          }}
-          onSubmitEditing={handleUpdateNameConfirm}
-        />
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isModalVisible}
+      onRequestClose={() => setModalVisible(false)}>
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Change Username</Text>
+          <TextInput
+            style={styles.modalTextInput}
+            placeholder="Enter new username"
+            value={newName}
+            onChangeText={text => setNewName(text)}
+            onSubmitEditing={() => handleUpdateNameConfirm()}
+          />
 
-        {formError && <Text style={styles.errorText}>{formError}</Text>}
+          {formError && <Text style={styles.errorText}>{formError}</Text>}
 
-        <View style={styles.modalButtonContainer}>
-          <TouchableOpacity
-            style={styles.modalCancelButton}
-            onPress={handleModalClose}>
-            <Text style={styles.modalCancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
+          <View style={styles.modalButtonContainer}>
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={() => setModalVisible(false)}>
+              <Text style={styles.modalCancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.modalUpdateButton}
-            onPress={handleUpdateNameConfirm}>
-            <Text style={styles.modalUpdateButtonText}>Update</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalUpdateButton}
+              onPress={() => handleUpdateNameConfirm()}>
+              <Text style={styles.modalUpdateButtonText}>Update</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </Modal>
   );
 };
 

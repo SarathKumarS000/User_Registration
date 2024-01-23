@@ -1,11 +1,10 @@
 import React from 'react';
 import DrawerNavigators from './DrawerNavigator';
-import {useSelector} from 'react-redux';
-import {RootState} from '../src/components/redux/rootReducer';
 import NavigationStack from './NavigationStack';
+import {useIsLoggedIn} from '../src/components/common/Selectors';
 
 const Navigators = () => {
-  const isLoggedIn = useSelector((state: RootState) => state.user.loggedUser);
+  const isLoggedIn = useIsLoggedIn();
 
   return <>{isLoggedIn ? <DrawerNavigators /> : <NavigationStack />}</>;
 };

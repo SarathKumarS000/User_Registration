@@ -1,26 +1,20 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Modal} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import {useForm} from 'react-hook-form';
 import styles from '../../Styles';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {updateUserName} from '../../redux/actions';
 import ChangeUsernameModal from '../../modal/ChangeUsernameModal';
-import {User, RouteProps} from '../../common/Interface';
+import {useUserByEmail, useUserList} from '../../common/Selectors';
+import {User, FormData, RouteProps} from '../../common/Interface';
 
 const UserDetails: React.FC<RouteProps> = ({route}) => {
   const dispatch = useDispatch();
-  const user = useSelector((state: any) =>
-    state.user.userList.find((u: User) => u.email === route.params.user),
-  );
-  const userList = useSelector((state: any) => state.user.userList);
-
+  const user = useUserByEmail(route.params.user);
+  const userList = useUserList();
   const [newName, setNewName] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
-  const form = useForm({
-    defaultValues: {
-      newUsername: '',
-    },
-  });
+  const form = useForm<FormData>();
 
   const handleUpdateNameConfirm = () => {
     if (newName.length >= 4) {
@@ -49,42 +43,32 @@ const UserDetails: React.FC<RouteProps> = ({route}) => {
     <View style={styles.container}>
       <View style={styles.fullUserDetailsContainer}>
         <Text style={styles.userTitle}>User Details</Text>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Name:</Text>
-          <Text style={styles.detailValue}>
-            {user?.firstName + ' ' + user?.lastName}
-          </Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Email:</Text>
-          <Text style={styles.detailValue}>{user?.email}</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Username:</Text>
-          <Text style={styles.detailValue}>{user?.userName}</Text>
-        </View>
+        {renderUserDetail('Name:', user?.firstName + ' ' + user?.lastName)}
+        {renderUserDetail('Email:', user?.email)}
+        {renderUserDetail('Username:', user?.userName)}
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.updateButton}>
             <Text style={styles.updateButtonText}>Update Username</Text>
           </View>
         </TouchableOpacity>
       </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <ChangeUsernameModal
-          newName={newName}
-          handleUpdateNameConfirm={handleUpdateNameConfirm}
-          setNewName={setNewName}
-          formError={form.formState.errors?.newUsername?.message}
-          handleModalClose={() => setModalVisible(false)}
-        />
-      </Modal>
+      <ChangeUsernameModal
+        newName={newName}
+        handleUpdateNameConfirm={handleUpdateNameConfirm}
+        setNewName={setNewName}
+        formError={form.formState.errors?.newUsername?.message}
+        isModalVisible={isModalVisible}
+        setModalVisible={() => setModalVisible(false)}
+      />
     </View>
   );
 };
 
 export default UserDetails;
+
+const renderUserDetail = (label: string, value: string) => (
+  <View style={styles.detailRow}>
+    <Text style={styles.detailLabel}>{label}</Text>
+    <Text style={styles.detailValue}>{value}</Text>
+  </View>
+);

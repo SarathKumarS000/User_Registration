@@ -13,20 +13,14 @@ import {
 } from 'react-native';
 import {useForm} from 'react-hook-form';
 import styles from '../Styles';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../redux/rootReducer';
+import {useDispatch} from 'react-redux';
 import {loginUser} from '../redux/reducers';
 import Input from '../common/Input';
-import {FormData, RouteProps} from '../common/Interface';
-// import DrawerNavigators from '../drawer/DrawerNavigator';
+import {FormData, RouteProps, User} from '../common/Interface';
+import {useUserList} from '../common/Selectors';
 
 const SignIn: React.FC<RouteProps> = ({navigation}) => {
-  const form = useForm<FormData>({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  const form = useForm<FormData>();
   const passwordRef = useRef<TextInput>(null);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -35,22 +29,20 @@ const SignIn: React.FC<RouteProps> = ({navigation}) => {
   };
 
   const dispatch = useDispatch();
-  const userList = useSelector((state: RootState) => state.user.userList);
-  console.log(userList);
+  const userList = useUserList();
 
   const onSubmit = () => {
     const {email, password} = form.getValues();
 
     const foundUser = userList.find(
-      (user: {email: string; userName: string; password: string}) =>
-        (user.email.toLowerCase() === email.toLowerCase() ||
-          user.userName.toLowerCase() === email.toLowerCase()) &&
+      (user: User) =>
+        (user.email.toLowerCase() === email?.toLowerCase() ||
+          user.userName.toLowerCase() === email?.toLowerCase()) &&
         user.password === password,
     );
 
     if (foundUser) {
       dispatch(loginUser(foundUser));
-      // navigation.navigate('DrawerNavigators');
     } else {
       Alert.alert('Error', 'Invalid Credentials');
     }
@@ -76,9 +68,6 @@ const SignIn: React.FC<RouteProps> = ({navigation}) => {
                   passwordRef.current.focus();
                 }
               }}
-              keyboardType="default"
-              textContentType="familyName"
-              autoCapitalize="none"
             />
 
             <Input
@@ -89,9 +78,6 @@ const SignIn: React.FC<RouteProps> = ({navigation}) => {
               inputRef={passwordRef}
               secureTextEntry={!showPassword}
               onSubmitEditing={onSubmit}
-              keyboardType="default"
-              textContentType="password"
-              autoCapitalize="none"
               togglePasswordVisibility={togglePasswordVisibility}
               showPassword={showPassword}
             />

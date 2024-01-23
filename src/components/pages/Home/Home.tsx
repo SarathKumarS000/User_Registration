@@ -11,12 +11,11 @@ import {
 } from 'react-native';
 import styles from '../../Styles';
 import {RouteProps} from '../../common/Interface';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/rootReducer';
+import {useIsLoggedIn, useUserList} from '../../common/Selectors';
 
 const HomeScreen: React.FC<RouteProps> = ({navigation}) => {
-  const user = useSelector((state: RootState) => state.user.loggedUser);
-  const userList = useSelector((state: any) => state.user.userList);
+  const user = useIsLoggedIn();
+  const userList = useUserList();
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.root}>
